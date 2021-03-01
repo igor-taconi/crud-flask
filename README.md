@@ -1,6 +1,6 @@
 # CRUD com Flask
 
-Experiência com um CRUD usando flask e suas ferramentas
+Experiência com um CRUD usando flask.
 
 ## Pré-requisitos
 Para você rodar o projeto é necessário tem instalado em sua máquina o `Python3.6+`.
