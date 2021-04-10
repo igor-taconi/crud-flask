@@ -38,7 +38,7 @@ def load(app: Flask) -> Flask:
         users = [u.as_dict() for u in session.query(User).all()]
         return users, 200
 
-    @app.route('/update/<int:id>', methods=['POST'])
+    @app.route('/update/<int:id>', methods=['PATCH'])
     def update(id):
         """Atualiza os dados de um usuário no banco de dados."""
         try:
@@ -58,7 +58,7 @@ def load(app: Flask) -> Flask:
         except AttributeError:
             return {'status': 404, 'mensagem': 'id não encontrado'}, 404
 
-    @app.route('/delete/<int:id>', methods=['GET'])
+    @app.route('/delete/<int:id>', methods=['DELETE'])
     def delete(id):
         """Deleta um usuário do banco de dados."""
         try:
