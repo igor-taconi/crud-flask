@@ -35,7 +35,16 @@ def load(app: Flask) -> Flask:
     @app.route('/read', methods=['GET'])
     def read():
         """Retorna os dados dos usuários da banco de dados."""
-        users = [u.as_dict() for u in session.query(User).all()]
+        query = session.query(User).all()
+        users = {
+            user.id: {
+                "username": user.username,
+                "email": user.email,
+                "password": user.password,
+            }
+            for user in query
+        }
+
         return users, 200
 
     @app.route('/update/<int:id>', methods=['PATCH'])
