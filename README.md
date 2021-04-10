@@ -50,9 +50,9 @@ gunicorn app.wsgi:app --bind 0.0.0.0:5000 --timeout 100 --reload
 - Para cadastrar um usuário envie o seu POST para a rota '/create'
 - O username e o email são valores únicos para todos os usuários, não pode ter dois POSTs como o mesmo username e o mesmo email.
 - A senha deve conter exatamente 6 caracteres.
-- Para atualizar via '/update/<id\>' é necessário informar o ID do usuário na rota depois da barra '/'.
-- Para excluir é necessário fazer GET para a rota '/delete/<id\>' e informar o ID do usuário depois do barra.
-- Para ver os usuários que estão cadastrados basta acesse '/read'
+- Para atualizar via '/update/<id\>' é necessário informar o ID do usuário na rota depois da barra '/' com o método PATCH.
+- Para excluir é necessário fazer DELETE para a rota '/delete/<id\>' e informar o ID do usuário depois do barra.
+- Para ver os usuários que estão cadastrados basta acesse '/read' com o método GET.
 
 ## Contribuindo
 Sinta-se à vontade para enviar pull requests.
