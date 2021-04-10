@@ -29,10 +29,13 @@ pip install -r requirements.txt
 
 - ### Como rodar esse projeto
 ```sh
-export FLASK_APP=main.py
-export FLASK_ENV=Development
+flask run
+```
 
-python main.py
+ou
+
+```sh
+gunicorn app.wsgi:app --bind 0.0.0.0:5000 --timeout 100 --reload
 ```
 
 ### Exemplo de POSTs
