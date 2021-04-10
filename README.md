@@ -3,7 +3,7 @@
 Experiência com um CRUD usando flask.
 
 ## Pré-requisitos
-Para você rodar o projeto é necessário tem instalado em sua máquina o `Python3.6+`.
+Para você rodar o projeto é necessário tem instalado em sua máquina o [`Python3.6.+`](https://www.python.org/) e [`Poetry`](https://python-poetry.org/).
 
 ## Como rodar esse projeto
 - ### Clone esse repositório.
@@ -11,29 +11,27 @@ Para você rodar o projeto é necessário tem instalado em sua máquina o `Pytho
 git clone https://github.com/igor-taconi/crud-flask.git <nome_da_pasta>
 ```
 
-- ### Crie um virtualenv com Python 3.
+- ### Crie um virtualenv com Poetry.
 ```sh
 cd <nome_da_pasta>
-python -m venv .venv
+poetry env use 3.6.9
 ```
 
 - ### Ative o virtualenv.
 ```sh
-source .venv/bin/activate
+poetry shell
 ```
 
 - ### Instale as dependências.
 ```sh
-pip install -r requirements.txt
+poetry install
 ```
 
 - ### Como rodar esse projeto
 ```sh
 flask run
 ```
-
 ou
-
 ```sh
 gunicorn app.wsgi:app --bind 0.0.0.0:5000 --timeout 100 --reload
 ```
