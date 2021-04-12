@@ -1,11 +1,10 @@
 from flask import Flask
+from . import routes
 
 
 def create_app():
     app = Flask(__name__)
 
-    from .routes import load
-
-    load(app)
+    routes.init_app(app)
 
     return app
