@@ -6,6 +6,22 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 bp = Blueprint('crud', __name__)
 
 
+def validate_data(data):
+    if 'username' not in data.keys():
+        return {'status': 400, 'mensagem': 'username não foi inserido'}, 400
+    elif 'email' not in data.keys():
+        return {'status': 400, 'mensagem': 'email não foi inserido'}, 400
+    elif 'password' not in data.keys():
+        return {'status': 400, 'mensagem': 'password não foi inserido'}, 400
+    elif '@' not in data['email']:
+        return {'status': 400, 'mensagem': 'email inválida'}, 400
+    elif len(data['password']) != 6:
+        return {
+            'status': 400,
+            'mensagem': 'o password deve ter 6 catacteres',
+        }, 400
+
+
 @bp.route('/')
 def index():
     """Retorna a função como key e a rota como valor."""
