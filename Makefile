@@ -1,5 +1,7 @@
 SRC_DIRS := app
 
+precommit: format check
+
 check:
 	python -m isort $(SRC_DIRS) --check --diff
 	python -m black $(SRC_DIRS) --check
@@ -11,3 +13,6 @@ format:
 
 run:
 	gunicorn app.wsgi:app --bind 0.0.0.0:5000 --timeout 100 --reload --log-file - --log-level debug
+
+test:
+	pytest tests/ -v --cov=app
