@@ -1,25 +1,11 @@
 from flask import Blueprint, request
 from peewee import IntegrityError
 
+from app.exceptions import InvalidEmailError, ShortPasswordError
+from app.schemas import SchemaUser
 from .model import User
 
 bp = Blueprint('crud', __name__)
-
-
-def validate_data(data):
-    if 'username' not in data.keys():
-        return {'status': 400, 'mensagem': 'username não foi inserido'}, 400
-    elif 'email' not in data.keys():
-        return {'status': 400, 'mensagem': 'email não foi inserido'}, 400
-    elif 'password' not in data.keys():
-        return {'status': 400, 'mensagem': 'password não foi inserido'}, 400
-    elif '@' not in data['email']:
-        return {'status': 400, 'mensagem': 'email inválida'}, 400
-    elif len(data['password']) != 6:
-        return {
-            'status': 400,
-            'mensagem': 'o password deve ter 6 catacteres',
-        }, 400
 
 
 @bp.route('/')
@@ -37,15 +23,22 @@ def index():
 def create():
     """Insere um novo usuário no banco de dados."""
     try:
-        user = request.get_json()
-        validate_data(user)
-        User.create(**user)
+        user = SchemaUser(**request.json)
+
+        User.create(**user.dict())
         return {'status': 201, 'mensagem': 'dados inseridos'}, 201
+    except InvalidEmailError:
+        return {'status': 400, 'mensagem': 'email inválida'}, 400
+    except ShortPasswordError:
+        return {
+            'status': 400,
+            'mensagem': 'Senha com menos de 6 caracteres',
+        }, 400
     except IntegrityError:
         return {
-            'status': 409,
+            'status': 400,
             'mensagem': 'Email já registrado',
-        }, 409
+        }, 400
 
 
 @bp.route('/read', methods=['GET'])
@@ -67,20 +60,27 @@ def read():
 @bp.route('/update/<int:id>', methods=['PATCH'])
 def update(id):
     """Atualiza os dados de um usuário no banco de dados."""
+
     try:
-        user = User.select().where(User.id == id)
-        new_data = request.get_json()
-        validate_data(new_data)
-        user.username = new_data['username']
-        user.email = new_data['email']
-        user.password = new_data['password']
+        user = User.select().where(User.id == id).get()
+        new_data = SchemaUser(**request.json)
+        user.username = new_data.username
+        user.email = new_data.email
+        user.password = new_data.password
         user.save()
         return {'status': 200, 'mensagem': 'dados atualizados'}, 200
+    except InvalidEmailError:
+        return {'status': 400, 'mensagem': 'email inválida'}, 400
+    except ShortPasswordError:
+        return {
+            'status': 400,
+            'mensagem': 'Senha com menos de 6 caracteres',
+        }, 400
     except IntegrityError:
         return {
-            'status': 409,
+            'status': 400,
             'mensagem': 'Email já registrado',
-        }, 409
+        }, 400
     except User.DoesNotExist:
         return {'status': 404, 'mensagem': 'id não encontrado'}, 404
 
