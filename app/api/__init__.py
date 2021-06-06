@@ -1,6 +1,7 @@
+from typing import NoReturn
+
 from flask import Blueprint, Flask
 from flask_restful import Api
-from typing import NoReturn
 
 from app.api.create import Create
 from app.api.delete import Delete
