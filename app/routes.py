@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from peewee import IntegrityError
 
 from app.exceptions import InvalidEmailError, ShortPasswordError
+from app.responses import create_error_response, create_success_response
 from app.schemas import SchemaUser
 from .model import User
 
@@ -11,12 +12,14 @@ bp = Blueprint('crud', __name__)
 @bp.route('/')
 def index():
     """Retorna a função como key e a rota como valor."""
-    return {
+    info = {
         'criar': '/create',
         'ler': '/read',
         'atualizar': '/update<int:id>',
         'deletar': '/delete<int:id>',
     }
+
+    return create_success_response(message='Ok', extra_info={'info': info})
 
 
 @bp.route('/create', methods=['POST'])
@@ -26,19 +29,16 @@ def create():
         user = SchemaUser(**request.json)
 
         User.create(**user.dict())
-        return {'status': 201, 'mensagem': 'dados inseridos'}, 201
+        return create_success_response('Dados inseridos', status_code=201)
+
     except InvalidEmailError:
-        return {'status': 400, 'mensagem': 'email inválida'}, 400
+        return create_error_response('email inválida')
+
     except ShortPasswordError:
-        return {
-            'status': 400,
-            'mensagem': 'Senha com menos de 6 caracteres',
-        }, 400
+        return create_error_response('Senha com menos de 6 caracteres')
+
     except IntegrityError:
-        return {
-            'status': 400,
-            'mensagem': 'Email já registrado',
-        }, 400
+        return create_error_response('Email já registrado')
 
 
 @bp.route('/read', methods=['GET'])
@@ -54,7 +54,7 @@ def read():
         for user in query
     }
 
-    return users, 200
+    return create_success_response(message='Ok', extra_info={'result': users})
 
 
 @bp.route('/update/<int:id>', methods=['PATCH'])
@@ -68,21 +68,20 @@ def update(id):
         user.email = new_data.email
         user.password = new_data.password
         user.save()
-        return {'status': 200, 'mensagem': 'dados atualizados'}, 200
+
+        return create_success_response('Dados atualizados')
+
     except InvalidEmailError:
-        return {'status': 400, 'mensagem': 'email inválida'}, 400
+        return create_error_response('Email inválida')
+
     except ShortPasswordError:
-        return {
-            'status': 400,
-            'mensagem': 'Senha com menos de 6 caracteres',
-        }, 400
+        return create_error_response('Senha com menos de 6 caracteres')
+
     except IntegrityError:
-        return {
-            'status': 400,
-            'mensagem': 'Email já registrado',
-        }, 400
+        return create_error_response('Email já registrado',)
+
     except User.DoesNotExist:
-        return {'status': 404, 'mensagem': 'id não encontrado'}, 404
+        return create_error_response('id não encontrado')
 
 
 @bp.route('/delete/<int:id>', methods=['DELETE'])
@@ -90,9 +89,9 @@ def delete(id):
     """Deleta um usuário do banco de dados."""
     user = User.delete_by_id(id)
     if user:
-        return {'status': 200, 'mensagem': 'exluido com sucesso'}, 200
+        return create_success_response('Excluido com sucesso')
 
-    return {'status': 404, 'mensagem': 'id não encontrado'}, 404
+    return create_error_response('id não encontrado')
 
 
 def init_app(app):
