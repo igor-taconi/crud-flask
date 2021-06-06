@@ -4,7 +4,7 @@ from peewee import IntegrityError
 from app.exceptions import InvalidEmailError, ShortPasswordError
 from app.responses import create_error_response, create_success_response
 from app.schemas import SchemaUser
-from .model import User
+from app.models import User
 
 bp = Blueprint('crud', __name__)
 
@@ -44,15 +44,7 @@ def create():
 @bp.route('/read', methods=['GET'])
 def read():
     """Retorna os dados dos usuários da banco de dados."""
-    query = User.select().namedtuples()
-    users = {
-        user.id: {
-            "username": user.username,
-            "email": user.email,
-            "password": user.password,
-        }
-        for user in query
-    }
+    users = User.get_all()
 
     return create_success_response(message='Ok', extra_info={'result': users})
 
@@ -62,12 +54,9 @@ def update(id):
     """Atualiza os dados de um usuário no banco de dados."""
 
     try:
-        user = User.select().where(User.id == id).get()
         new_data = SchemaUser(**request.json)
-        user.username = new_data.username
-        user.email = new_data.email
-        user.password = new_data.password
-        user.save()
+        user = User.select().where(User.id == id).get()
+        user.update_all(**new_data.dict())
 
         return create_success_response('Dados atualizados')
 
