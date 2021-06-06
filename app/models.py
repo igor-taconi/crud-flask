@@ -19,11 +19,11 @@ class User(BaseModel):
 
     def __repr__(self):
         fields = (
-            "User("
-                f"username={self.username},"
-                f"email={self.email},"
-                f"password={self.password}"
-            ")"
+            'User('
+            f'username={self.username},'
+            f'email={self.email},'
+            f'password={self.password}'
+            ')'
         )
 
         return fields

@@ -16,14 +16,10 @@ def create_message(
     error: bool,
     success: bool,
     status_code: int,
-    extra_info: ExtraInfo = None
+    extra_info: ExtraInfo = None,
 ) -> Message:
     data = {
-        'status': {
-            'code': status_code,
-            'success': success,
-            'error': error
-        },
+        'status': {'code': status_code, 'success': success, 'error': error},
         'mensage': message,
     }
     if isinstance(extra_info, dict):
@@ -40,7 +36,7 @@ def create_error_response(
         error=True,
         success=False,
         status_code=status_code,
-        extra_info=extra_info
+        extra_info=extra_info,
     )
 
     return create_response(data, status_code)
@@ -54,7 +50,7 @@ def create_success_response(
         error=False,
         success=True,
         status_code=status_code,
-        extra_info=extra_info
+        extra_info=extra_info,
     )
 
     return create_response(data, status_code)

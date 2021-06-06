@@ -1,6 +1,8 @@
 from re import compile as re_compile
 
-from pydantic import BaseModel, EmailStr, Field as field, validator
+from pydantic import BaseModel, EmailStr
+from pydantic import Field as field
+from pydantic import validator
 from werkzeug.security import generate_password_hash
 
 from app.exceptions import InvalidEmailError, ShortPasswordError
@@ -8,7 +10,7 @@ from app.exceptions import InvalidEmailError, ShortPasswordError
 
 class SchemaUser(BaseModel):
     email: EmailStr
-    password: str = field(..., min_length=8)
+    password: str
     username: str
 
     @validator('password', pre=True)
@@ -19,7 +21,7 @@ class SchemaUser(BaseModel):
 
     @validator('email', pre=True)
     def email_invalid_format(cls, v):
-        regex = re_compile(r"^[a-z0-9._%+-]+@[a-zA0-9.-]+\.[a-z]{2,}$")
+        regex = re_compile(r'^[a-z0-9._%+-]+@[a-zA0-9.-]+\.[a-z]{2,}$')
 
         if not regex.match(v):
             raise InvalidEmailError()
