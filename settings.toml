@@ -1,0 +1,17 @@
+[default]
+DEBUG = false
+EXTENSIONS = [
+    "app.routes:init_app",
+]
+
+[development]
+EXTENSIONS = [
+    "dynaconf_merge_unique"
+]
+TEMPLATES_AUTO_RELOAD = true
+DEBUG = true
+
+[testing]
+
+
+[production]
